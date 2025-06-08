@@ -187,23 +187,23 @@ def simple_hand_explanation(guessed_rank, correct_rank, cards):
         return ""
     if correct_rank > guessed_rank:
         if correct_rank == 3:
-            return "You have three cards of the same rank, which makes Three of a Kind, stronger than what you guessed."
+            return "There are three cards of the same rank, which makes Three of a Kind, stronger than what you guessed."
         if correct_rank == 1:
-            return "You have two cards of the same rank, which is One Pair, better than what you guessed."
+            return "There are two cards of the same rank, which is One Pair, better than what you guessed."
         if correct_rank == 2:
-            return "You have two different pairs, which makes Two Pair, stronger than what you guessed."
+            return "There are two different pairs, which makes Two Pair, stronger than what you guessed."
         if correct_rank == 4:
-            return "You have five cards in consecutive ranks, which makes a Straight, stronger than what you guessed."
+            return "There are five cards in consecutive ranks, which makes a Straight, stronger than what you guessed."
         if correct_rank == 5:
-            return "You have five cards of the same suit, which makes a Flush, stronger than what you guessed."
+            return "There are five cards of the same suit, which makes a Flush, stronger than what you guessed."
         if correct_rank == 6:
-            return "You have a Three of a Kind plus a Pair, which makes a Full House, stronger than what you guessed."
+            return "There are a Three of a Kind plus a Pair, which makes a Full House, stronger than what you guessed."
         if correct_rank == 7:
-            return "You have four cards of the same rank, which makes Four of a Kind, very strong."
+            return "There are four cards of the same rank, which makes Four of a Kind, very strong."
         if correct_rank == 8:
-            return "You have five cards in a row all of the same suit, which is a Straight Flush, very strong."
+            return "There are five cards in a row all of the same suit, which is a Straight Flush, very strong."
         if correct_rank == 9:
-            return "You have the highest Straight Flush: Ten to Ace of the same suit, called Royal Flush."
+            return "This is the highest Straight Flush: Ten to Ace of the same suit, called Royal Flush."
     return f"The correct hand is {HAND_OPTIONS[correct_rank]}, which differs from your guess."
 
 def play_game(player_money, dealer_money):
@@ -301,8 +301,12 @@ def main():
     player_money = 100
     dealer_money = 100
 
-    print("Welcome to Texas Hold'em Quiz Game!")
-    print(f"You and the dealer start with ${player_money} each.")
+    print("\n###############################################\nWelcome to Texas Hold'em Quiz Game!")
+    print("\nThis program will help you learn to identify the hands of the game.")
+    print("\nYou are presented all the cards face-up,\nyours and the dealer's and all the community cards.")
+    print("\nYour job is to identify what hand you have and what hand the dealer has.\nThe program will correct you if wrong.")
+    print(f"\nYou and the dealer start with ${player_money} each,")
+    print("but in this practice game you will not practice the betting rounds part.")
 
     while True:
         player_money, dealer_money, can_continue = play_game(player_money, dealer_money)
