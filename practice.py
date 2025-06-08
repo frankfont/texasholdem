@@ -1,22 +1,16 @@
 """
 Texas Hold'em Quiz Game
 
-Description:
-This is a simplified Texas Hold'em poker quiz game where the player competes against a dealer.
-Both start with $100. The player places bets each round, and the dealer matches the bet if possible.
-Cards are dealt and revealed in stages (flop, turn, river), then both hands are fully revealed.
+This program simulates hand ranking and winner selection via user input rather than automatic hand evaluation.
 
-After the reveal, the player is asked three questions:
-  1. Name the player's best hand (from a list of poker hands).
-  2. Name the dealer's best hand (from the same list).
-  3. Name the winner (player, dealer, or tie).
+You are presented all the cards face-up,
+yours and the dealer's and all the community cards.
 
-The player then inputs the correct answers for verification. The game compares declared and correct answers,
-shows the results, updates money totals accordingly, and ends if the player loses all money.
+Your job is to identify what hand you have and what hand the dealer has.
+The program will correct you if wrong.
 
-The player can choose to play again after each game or quit anytime.
-
-Note: This program simulates hand ranking and winner selection via user input rather than automatic hand evaluation.
+You and the dealer start with $100 each,
+but in this practice game you will not practice the betting rounds part.
 
 ---
 202506 - Frank Font created initial version
@@ -24,6 +18,7 @@ Note: This program simulates hand ranking and winner selection via user input ra
 
 import random
 from collections import Counter
+import time
 
 SUITS = {
     'Spades': '♠',
@@ -206,7 +201,27 @@ def simple_hand_explanation(guessed_rank, correct_rank, cards):
             return "This is the highest Straight Flush: Ten to Ace of the same suit, called Royal Flush."
     return f"The correct hand is {HAND_OPTIONS[correct_rank]}, which differs from your guess."
 
+# Global accumulators for timing and rounds
+_total_time_identify_hands = 0.0
+_total_time_identify_winner = 0.0
+_total_rounds = 0
+_total_failed_hand_ids = 0
+_total_failed_winner_ids = 0
+
+def timed_choose_hand(prompt):
+    start = time.time()
+    result = choose_hand(prompt)
+    elapsed = time.time() - start
+    return result, elapsed
+
+def timed_choose_winner():
+    start = time.time()
+    result = choose_winner()
+    elapsed = time.time() - start
+    return result, elapsed
+
 def play_game(player_money, dealer_money):
+    global _total_time_identify_hands, _total_time_identify_winner, _total_rounds, _total_failed_hand_ids, _total_failed_winner_ids
     deck = [f"{rank} of {suit}" for suit in SUITS for rank in RANKS]
     random.shuffle(deck)
 
@@ -241,10 +256,19 @@ def play_game(player_money, dealer_money):
     player_best = evaluate_hand(player_hand + community_cards)
     dealer_best = evaluate_hand(dealer_hand + community_cards)
 
-    player_declared_hand_name, player_declared_rank = choose_hand("Name your hand (pick from options):")
-    dealer_declared_hand_name, dealer_declared_rank = choose_hand("Name the dealer's hand (pick from options):")
-    winner_guess = choose_winner()
+    # Timed hand identification
+    (player_declared_hand_name, player_declared_rank), hand_time1 = timed_choose_hand("Name your hand (pick from options):")
+    (dealer_declared_hand_name, dealer_declared_rank), hand_time2 = timed_choose_hand("Name the dealer's hand (pick from options):")
+    this_hand_id_time = hand_time1 + hand_time2
+    _total_time_identify_hands += this_hand_id_time
 
+    # Timed winner identification
+    winner_guess, this_winner_id_time = timed_choose_winner()
+    _total_time_identify_winner += this_winner_id_time
+
+    _total_rounds += 1
+
+    # --- Results ---
     print("\n--- Results ---")
     print(f"Your declared hand: {player_declared_hand_name}")
     print(f"Dealer's declared hand: {dealer_declared_hand_name}")
@@ -294,6 +318,30 @@ def play_game(player_money, dealer_money):
     if player_money <= 0:
         print("\nYou've lost all your money! Game over.")
         return player_money, dealer_money, False
+
+    # Count failed guesses for this round
+    failed_hand = 0
+    failed_winner = 0
+    if player_declared_rank != player_best[0]:
+        failed_hand += 1
+    if dealer_declared_rank != dealer_best[0]:
+        failed_hand += 1
+    if winner_guess != actual_winner:
+        failed_winner += 1
+    _total_failed_hand_ids += failed_hand
+    _total_failed_winner_ids += failed_winner
+
+    # --- Statistics Table ---
+    avg_hand_id_time = _total_time_identify_hands / _total_rounds if _total_rounds else 0
+    avg_winner_id_time = _total_time_identify_winner / _total_rounds if _total_rounds else 0
+    print("\n+-------------------+------------+------------+")
+    print("|                   |  ID Hands  | ID Winner  |")
+    print("+-------------------+------------+------------+")
+    print(f"| This Round:       |  {this_hand_id_time:6.1f}s  |  {this_winner_id_time:6.1f}s  |")
+    print(f"| Average Time:     |  {avg_hand_id_time:6.1f}s  |  {avg_winner_id_time:6.1f}s  |")
+    print(f"| Total Time:       |  {_total_time_identify_hands:6.1f}s  |  {_total_time_identify_winner:6.1f}s  |")
+    print("+-------------------+------------+------------+")
+    print(f"Total Rounds: {_total_rounds} Total Failed Hand IDs: {_total_failed_hand_ids} Total Failed Winner IDs: {_total_failed_winner_ids}")
 
     return player_money, dealer_money, True
 
