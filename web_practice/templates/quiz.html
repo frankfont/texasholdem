@@ -9,20 +9,20 @@
 <div class="container mt-5">
     <h2>Community Cards</h2>
     <div class="mb-3">
-        {% for card in community_cards %}
-            <span class="badge bg-secondary fs-5">{{ card }}</span>
+        {% for img in community_card_imgs %}
+            <img src="{{ url_for('static', filename=img) }}" alt="card" style="height:80px; margin-right:4px; border-radius:6px; box-shadow:0 2px 6px #aaa;">
         {% endfor %}
     </div>
     <h3>Your Hand</h3>
     <div class="mb-3">
-        {% for card in player_hand %}
-            <span class="badge bg-primary fs-5">{{ card }}</span>
+        {% for img in player_hand_imgs %}
+            <img src="{{ url_for('static', filename=img) }}" alt="card" style="height:80px; margin-right:4px; border-radius:6px; box-shadow:0 2px 6px #aaa;">
         {% endfor %}
     </div>
     <h3>Dealer's Hand</h3>
     <div class="mb-3">
-        {% for card in dealer_hand %}
-            <span class="badge bg-danger fs-5">{{ card }}</span>
+        {% for img in dealer_hand_imgs %}
+            <img src="{{ url_for('static', filename=img) }}" alt="card" style="height:80px; margin-right:4px; border-radius:6px; box-shadow:0 2px 6px #aaa;">
         {% endfor %}
     </div>
     <form method="post">

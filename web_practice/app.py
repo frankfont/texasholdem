@@ -145,6 +145,23 @@ def simple_hand_explanation(guessed_rank, correct_rank):
             return "This is the highest Straight Flush: Ten to Ace of the same suit, called Royal Flush."
     return f"The correct hand is {HAND_OPTIONS[correct_rank]}, which differs from your guess."
 
+def card_image_filename(card):
+    rank, _, suit = card.partition(' of ')
+    rank = rank.lower()
+    suit = suit.lower()
+    if rank == '10':
+        rank = '10'
+    elif rank == 'jack':
+        rank = 'jack'
+    elif rank == 'queen':
+        rank = 'queen'
+    elif rank == 'king':
+        rank = 'king'
+    elif rank == 'ace':
+        rank = 'ace'
+    # e.g. card_images/2_of_clubs.png -> static/card_images/2_of_clubs.png for url_for
+    return f"card_images/{rank}_of_{suit}.png"
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if 'player_money' not in session:
@@ -200,6 +217,10 @@ def quiz():
         session['hand_id_time'] = hand_id_time
         session['winner_id_time'] = winner_id_time
         return redirect(url_for('result'))
+    # Pass card image filenames to the template
+    player_hand_imgs = [card_image_filename(card) for card in player_hand]
+    dealer_hand_imgs = [card_image_filename(card) for card in dealer_hand]
+    community_card_imgs = [card_image_filename(card) for card in community_cards]
     return render_template('quiz.html',
         player_hand=player_hand,
         dealer_hand=dealer_hand,
@@ -207,7 +228,10 @@ def quiz():
         hand_options=HAND_OPTIONS,
         error=error,
         start_hand_time=time.time(),
-        start_winner_time=time.time()
+        start_winner_time=time.time(),
+        player_hand_imgs=player_hand_imgs,
+        dealer_hand_imgs=dealer_hand_imgs,
+        community_card_imgs=community_card_imgs
     )
 
 @app.route('/result')
@@ -269,6 +293,10 @@ def result():
         session['stats'] = stats
     avg_hand_id_time = stats['total_time_identify_hands'] / stats['total_rounds'] if stats['total_rounds'] else 0
     avg_winner_id_time = stats['total_time_identify_winner'] / stats['total_rounds'] if stats['total_rounds'] else 0
+    # Pass card image filenames to the template
+    player_hand_imgs = [card_image_filename(card) for card in player_hand]
+    dealer_hand_imgs = [card_image_filename(card) for card in dealer_hand]
+    community_card_imgs = [card_image_filename(card) for card in community_cards]
     return render_template('result.html',
         player_hand=player_hand,
         dealer_hand=dealer_hand,
@@ -295,7 +323,10 @@ def result():
         total_winner_id_time=stats['total_time_identify_winner'],
         total_rounds=stats['total_rounds'],
         total_failed_hand_ids=stats['total_failed_hand_ids'],
-        total_failed_winner_ids=stats['total_failed_winner_ids']
+        total_failed_winner_ids=stats['total_failed_winner_ids'],
+        player_hand_imgs=player_hand_imgs,
+        dealer_hand_imgs=dealer_hand_imgs,
+        community_card_imgs=community_card_imgs
     )
 
 @app.route('/reset')
