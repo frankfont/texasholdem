@@ -14,17 +14,19 @@
             <img src="{{ url_for('static', filename=img) }}" alt="card" style="height:80px; margin-right:4px; border-radius:6px; box-shadow:0 2px 6px #aaa;">
         {% endfor %}
     </div>
-    <h4>Your Hand</h4>
-    <div class="mb-3">
-        {% for img in player_hand_imgs %}
-            <img src="{{ url_for('static', filename=img) }}" alt="card" style="height:80px; margin-right:4px; border-radius:6px; box-shadow:0 2px 6px #aaa;">
-        {% endfor %}
-    </div>
-    <h4>Dealer's Hand</h4>
-    <div class="mb-3">
-        {% for img in dealer_hand_imgs %}
-            <img src="{{ url_for('static', filename=img) }}" alt="card" style="height:80px; margin-right:4px; border-radius:6px; box-shadow:0 2px 6px #aaa;">
-        {% endfor %}
+    <div class="mb-3 d-flex align-items-center" style="gap: 32px;">
+        <div>
+            <div class="fw-bold">Your Hand</div>
+            {% for img in player_hand_imgs %}
+                <img src="{{ url_for('static', filename=img) }}" alt="card" style="height:80px; margin-right:4px;">
+            {% endfor %}
+        </div>
+        <div>
+            <div class="fw-bold">Dealer's Hand</div>
+            {% for img in dealer_hand_imgs %}
+                <img src="{{ url_for('static', filename=img) }}" alt="card" style="height:80px; margin-right:4px;">
+            {% endfor %}
+        </div>
     </div>
     <div class="mb-3">
         <strong>Your guess:</strong> {{ hand_options[player_guess] }}<br>
