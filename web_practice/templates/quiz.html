@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz Round - Texas Hold'em</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+    <h2>Community Cards</h2>
+    <div class="mb-3">
+        {% for card in community_cards %}
+            <span class="badge bg-secondary fs-5">{{ card }}</span>
+        {% endfor %}
+    </div>
+    <h3>Your Hand</h3>
+    <div class="mb-3">
+        {% for card in player_hand %}
+            <span class="badge bg-primary fs-5">{{ card }}</span>
+        {% endfor %}
+    </div>
+    <h3>Dealer's Hand</h3>
+    <div class="mb-3">
+        {% for card in dealer_hand %}
+            <span class="badge bg-danger fs-5">{{ card }}</span>
+        {% endfor %}
+    </div>
+    <form method="post">
+        <input type="hidden" name="start_hand_time" value="{{ start_hand_time }}">
+        <input type="hidden" name="start_winner_time" value="{{ start_winner_time }}">
+        <div class="mb-3">
+            <label for="player_hand" class="form-label">What is your best hand?</label>
+            <select class="form-select" name="player_hand" id="player_hand" required>
+                {% for i in range(hand_options|length) %}
+                    <option value="{{ i }}">{{ hand_options[i] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="dealer_hand" class="form-label">What is the dealer's best hand?</label>
+            <select class="form-select" name="dealer_hand" id="dealer_hand" required>
+                {% for i in range(hand_options|length) %}
+                    <option value="{{ i }}">{{ hand_options[i] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Who wins?</label><br>
+            <input type="radio" name="winner" value="player" required> Player
+            <input type="radio" name="winner" value="dealer"> Dealer
+            <input type="radio" name="winner" value="tie"> Tie
+        </div>
+        <button type="submit" class="btn btn-success">Submit Answers</button>
+    </form>
+    {% if error %}
+        <div class="alert alert-danger mt-3">{{ error }}</div>
+    {% endif %}
+</div>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Results - Texas Hold'em</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+    <h2>Results</h2>
+    <h4>Community Cards</h4>
+    <div class="mb-3">
+        {% for card in community_cards %}
+            <span class="badge bg-secondary fs-5">{{ card }}</span>
+        {% endfor %}
+    </div>
+    <h4>Your Hand</h4>
+    <div class="mb-3">
+        {% for card in player_hand %}
+            <span class="badge bg-primary fs-5">{{ card }}</span>
+        {% endfor %}
+    </div>
+    <h4>Dealer's Hand</h4>
+    <div class="mb-3">
+        {% for card in dealer_hand %}
+            <span class="badge bg-danger fs-5">{{ card }}</span>
+        {% endfor %}
+    </div>
+    <div class="mb-3">
+        <strong>Your guess:</strong> {{ hand_options[player_guess] }}<br>
+        <strong>Dealer's guess:</strong> {{ hand_options[dealer_guess] }}<br>
+        <strong>Winner guess:</strong> {{ winner_guess|capitalize }}
+    </div>
+    <div class="mb-3">
+        <strong>Correct your hand:</strong> {{ hand_options[player_best[0]] }}<br>
+        <strong>Correct dealer's hand:</strong> {{ hand_options[dealer_best[0]] }}<br>
+        <strong>Actual winner:</strong> {{ actual_winner|capitalize }}
+    </div>
+    <div class="mb-3">
+        {% if player_correct %}
+            <span class="text-success">✅ You correctly identified your best hand.</span><br>
+        {% else %}
+            <span class="text-danger">❌ Your guess for your hand was incorrect.</span><br>
+            {% if player_explanation %}<em>{{ player_explanation }}</em><br>{% endif %}
+        {% endif %}
+        {% if dealer_correct %}
+            <span class="text-success">✅ You correctly identified the dealer's best hand.</span><br>
+        {% else %}
+            <span class="text-danger">❌ Your guess for the dealer's hand was incorrect.</span><br>
+            {% if dealer_explanation %}<em>{{ dealer_explanation }}</em><br>{% endif %}
+        {% endif %}
+        {% if winner_correct %}
+            <span class="text-success">✅ You correctly identified the winner!</span>
+        {% else %}
+            <span class="text-danger">❌ Your guess for the winner was incorrect.</span>
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        <strong>Your money:</strong> ${{ player_money }}<br>
+        <strong>Dealer's money:</strong> ${{ dealer_money }}
+    </div>
+    <a href="/new_round" class="btn btn-primary">Play Another Round</a>
+    <a href="/reset" class="btn btn-link">Reset Game</a>
+    <div class="mb-4">
+        <table class="table table-bordered align-middle" style="max-width: 500px; margin: 0;">
+            <thead class="table-light">
+                <tr>
+                    <th></th>
+                    <th>ID Hands</th>
+                    <th>ID Winner</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>This Round:</strong></td>
+                    <td>{{ '%.1f' % hand_id_time }}s</td>
+                    <td>{{ '%.1f' % winner_id_time }}s</td>
+                </tr>
+                <tr>
+                    <td><strong>Average Time:</strong></td>
+                    <td>{{ '%.1f' % avg_hand_id_time }}s</td>
+                    <td>{{ '%.1f' % avg_winner_id_time }}s</td>
+                </tr>
+                <tr>
+                    <td><strong>Total Time:</strong></td>
+                    <td>{{ '%.1f' % total_hand_id_time }}s</td>
+                    <td>{{ '%.1f' % total_winner_id_time }}s</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="mt-2">
+            <strong>Total Rounds:</strong> {{ total_rounds }} &nbsp; 
+            <strong>Total Failed Hand IDs:</strong> {{ total_failed_hand_ids }} &nbsp; 
+            <strong>Total Failed Winner IDs:</strong> {{ total_failed_winner_ids }}
+        </div>
+    </div>
+</div>
+</body>
+</html>
